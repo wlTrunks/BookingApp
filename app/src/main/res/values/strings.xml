@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">BookingApp</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="book_online">Book Online</string>
+    <string name="clear_filter">Clear filter</string>
+
+
+    <!--    Really need 0 here?   I will leave it-->
+    <string-array name="bed_array">
+        <item>All</item>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+</resources>
