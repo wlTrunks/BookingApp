@@ -78,7 +78,6 @@ class SearchApartmentVM(private val usecase: GetApartmentUC) : ViewModel(), GetA
                     checkFilters.value = "Select To Date"
                 } else {
                     // Do Search
-                    println("TEST doSearch 3")
                     checkFilters.value = "DONE"
                     _isFromSearch = true
                     requestListApartment()

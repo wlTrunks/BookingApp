@@ -30,19 +30,19 @@ import kotlin.collections.ArrayList
  */
 class HomeFragment : Fragment() {
 
-    private var listApartments = ArrayList<ApartmentData>()
-    private lateinit var adapter: ApartmentListAdapter
-    val vm: SearchApartmentVM by lazy {
+    private var _listApartments = ArrayList<ApartmentData>()
+    private lateinit var _adapter: ApartmentListAdapter
+    private val _vm: SearchApartmentVM by lazy {
         ViewModelProviders.of(activity!!).get(SearchApartmentVM::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        vm.checkFilters.observe(this, Observer<String> { message ->
+        _vm.checkFilters.observe(this, Observer<String> { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         })
-        vm.apartmentList.observe(this, Observer<MutableList<ApartmentData>> { list ->
+        _vm.apartmentList.observe(this, Observer<MutableList<ApartmentData>> { list ->
             proceedListApartment(list)
         })
     }
@@ -60,16 +60,16 @@ class HomeFragment : Fragment() {
 
         resetDateFilters()
 
-        vm.requestListApartment()
+        _vm.requestListApartment()
 
         setListeners()
     }
 
     private fun setAdapter(view: View) {
-        adapter = ApartmentListAdapter(listApartments) {
+        _adapter = ApartmentListAdapter(_listApartments) {
             view?.findNavController()?.navigate(R.id.action_homeFragment_to_bookFragment, it)
         }
-        recylerApartment.adapter = adapter
+        recylerApartment.adapter = _adapter
     }
 
     private fun setListeners() {
@@ -83,7 +83,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onItemSelected(p0: AdapterView<*>, p1: View?, p2: Int, p3: Long) {
-                vm.setBedroomFilter(p0.getItemAtPosition(p2).toString())
+                _vm.setBedroomFilter(p0.getItemAtPosition(p2).toString())
             }
         }
         btnSearch.setOnClickListener { search() }
@@ -93,7 +93,7 @@ class HomeFragment : Fragment() {
         recylerApartment.scrollToPosition(0)
         spinner.setSelection(0, false)
         resetDateFilters()
-        vm.clearFilters()
+        _vm.clearFilters()
     }
 
     private fun resetDateFilters() {
@@ -104,21 +104,21 @@ class HomeFragment : Fragment() {
     }
 
     private fun proceedListApartment(list: MutableList<ApartmentData>) {
-        listApartments.clear()
+        _listApartments.clear()
         if (list.size == 0) {
             Toast.makeText(context, "No apartment found", Toast.LENGTH_SHORT).show()
         } else {
-            listApartments.addAll(list)
-            listApartments.forEach { it.diatance = getDistance(it.latitude, it.longitude) }
-            listApartments.sortedWith(Comparator { one, other -> one?.diatance?.compareTo(other?.diatance!!)!! })
+            _listApartments.addAll(list)
+            _listApartments.forEach { it.diatance = getDistance(it.latitude, it.longitude) }
+            _listApartments.sortedWith(Comparator { one, other -> one?.diatance?.compareTo(other?.diatance!!)!! })
         }
-        adapter.notifyDataSetChanged()
+        _adapter.notifyDataSetChanged()
     }
 
 
     private fun search() {
         if (ConnectivityReceiver.isInternet(context!!)) {
-            vm.doSearch()
+            _vm.doSearch()
         } else {
             (activity as BaseActivity).noInternetConnection()
         }
@@ -163,8 +163,8 @@ class HomeFragment : Fragment() {
                         newDate.set(year, monthOfYear, dayOfMonth)
                         val date = Helper.dateFormatterShow.format(newDate.time)
                         editText.setText(date)
-                        if (value == DATE_FROM) vm.dateFrom = date
-                        if (value == DATE_TO) vm.dateTo = date
+                        if (value == DATE_FROM) _vm.dateFrom = date
+                        if (value == DATE_TO) _vm.dateTo = date
                     },
                     newCalendar.get(Calendar.YEAR),
                     newCalendar.get(Calendar.MONTH),
